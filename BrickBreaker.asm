@@ -23,18 +23,42 @@ segment code
     mov si, 319
     mov di, 240
 
-    ; Desenhar layout
+;escrever o cabecalho
+    mov     cx,20			;numero de caracteres
+    mov     bx,0
+    mov     dh,14			;linha 0-29
+    mov     dl,29 			;coluna 0-79
+	mov	    byte[cor],branco
+
+show_title:
+	call    cursor
+    mov     al,[bx+title]
+	call    caracter
+    inc     bx	                ;proximo caracter
+	inc 	dl	                ;avanca a coluna
+    loop    show_title
+
+inicio:
+    mov ah,00h
+    int 16h
+
+    cmp al,0Dh ;'n' -> Sair
+    je desenha_layout 
+
+    jmp inicio
+
+; Desenhar layout
 desenha_layout:
-    mov     byte[cor],branco_intenso    ; baixo
-    mov     ax,0
-    push        ax
-    mov     ax,0
-    push        ax
-    mov     ax,639
-    push        ax
-    mov     ax,0
-    push        ax
-    call        line
+    mov     byte [cor], preto    ; apaga title
+    mov     ax, 230
+    push    ax
+    mov     ax, 240
+    push    ax
+    mov     ax, 390
+    push    ax
+    mov     ax, 255
+    push    ax
+    call    rect
 
     mov     byte[cor],branco_intenso    ; esquerda
     mov     ax,0
@@ -69,10 +93,145 @@ desenha_layout:
     push        ax
     call        line 
 
+desenha_blocos:    ;Largura: 95, Altura: 20, Espaçamento: 10
+    ;1,1
+    mov     byte [cor], magenta_claro   
+    mov     ax, 10
+    push    ax
+    mov     ax, 450
+    push    ax
+    mov     ax, 105
+    push    ax
+    mov     ax, 470
+    push    ax
+    call    rect
+    ;2,1 
+    mov     byte [cor], vermelho          
+    mov     ax, 10
+    push    ax
+    mov     ax, 420
+    push    ax
+    mov     ax, 105
+    push    ax
+    mov     ax, 440
+    push    ax
+    call    rect
+    ;1,2 
+    mov     byte [cor], azul              
+    mov     ax, 115
+    push    ax
+    mov     ax, 450
+    push    ax
+    mov     ax, 210
+    push    ax
+    mov     ax, 470
+    push    ax
+    call    rect
+    ;2,2
+    mov     byte [cor], amarelo           
+    mov     ax, 115
+    push    ax
+    mov     ax, 420
+    push    ax
+    mov     ax, 210
+    push    ax
+    mov     ax, 440
+    push    ax
+    call    rect
+    ;1,3
+    mov     byte [cor], cyan   
+    mov     ax, 220
+    push    ax
+    mov     ax, 450
+    push    ax
+    mov     ax, 315
+    push    ax
+    mov     ax, 470
+    push    ax
+    call    rect
+    ;2,3
+    mov     byte [cor], verde_claro   
+    mov     ax, 220
+    push    ax
+    mov     ax, 420
+    push    ax
+    mov     ax, 315
+    push    ax
+    mov     ax, 440
+    push    ax
+    call    rect
+    ;1,4
+    mov     byte [cor], verde_claro   
+    mov     ax, 325
+    push    ax
+    mov     ax, 450
+    push    ax
+    mov     ax, 420
+    push    ax
+    mov     ax, 470
+    push    ax
+    call    rect
+    ;2,4
+    mov     byte [cor], cyan   
+    mov     ax, 325
+    push    ax
+    mov     ax, 420
+    push    ax
+    mov     ax, 420
+    push    ax
+    mov     ax, 440
+    push    ax
+    call    rect
+    ;1,5
+    mov     byte [cor], amarelo   
+    mov     ax, 430
+    push    ax
+    mov     ax, 450
+    push    ax
+    mov     ax, 525
+    push    ax
+    mov     ax, 470
+    push    ax
+    call    rect
+    ;2,5
+    mov     byte [cor], azul   
+    mov     ax, 430
+    push    ax
+    mov     ax, 420
+    push    ax
+    mov     ax, 525
+    push    ax
+    mov     ax, 440
+    push    ax
+    call    rect
+    ;1,6
+    mov     byte [cor], vermelho   
+    mov     ax, 535
+    push    ax
+    mov     ax, 450
+    push    ax
+    mov     ax, 630
+    push    ax
+    mov     ax, 470
+    push    ax
+    call    rect
+    ;2,6
+    mov     byte [cor], magenta_claro 
+    mov     ax, 535
+    push    ax
+    mov     ax, 420
+    push    ax
+    mov     ax, 630
+    push    ax
+    mov     ax, 440
+    push    ax
+    call    rect
+    
+
 volta:
     ; Desenhar a bola
-    mov     byte[cor],magenta  
-    mov     ax, si
+    mov     byte[cor],azul  
+    mov     ax, si 
     push        ax
     mov     ax, di
     push        ax
@@ -83,7 +242,7 @@ volta:
     ; Delay utilizando a interrupção int 15h
     mov     ah, 86h
     mov     cx, 0
-    mov     dx, 5000 
+    mov     dx, 100 
     int     15h
 
     ; Limpar a bola anterior (desenhar a bola em preto para apagar)
@@ -232,14 +391,19 @@ check_com: ; checa tecla
     cmp al,64h ;'d'
     je PADDLE_RIGHT
 
+    cmp al,27h ;'>'-> Move para direita
+    je PADDLE_RIGHT
+    cmp al,25h ;'<'-> Move para direita
+    je PADDLE_LEFT
+
     cmp al,50h ;'P' -> Pause
     je pause
     cmp al,70h ;'p'
     je pause
 
-    cmp al,53h ;'S' -> Sair
+    cmp al,51h ;'Q' -> Sair
     je sair
-    cmp al,73h ;'s'
+    cmp al,71h ;'q'
     je sair
 
     jmp volta
@@ -927,6 +1091,8 @@ saved_vx    dw      0
 saved_vy    dw      0
                    
 fim           db        'Game Over reiniciar? (y/n)'
+title           db      'Press enter to start'
+
 
 x_barra dw 270      ;posição inicial 
 x_barra_end dw 370  ;posição final
