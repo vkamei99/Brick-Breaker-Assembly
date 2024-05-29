@@ -23,18 +23,22 @@ segment code
     mov si, 319
     mov di, 240
 
-    mov     byte [cor], preto    ; apaga title
-    mov     ax, 200
-    push    ax
-    mov     ax, 240
-    push    ax
-    mov     ax, 430
-    push    ax
-    mov     ax, 255
-    push    ax
-    call    rect
+;def
+    mov     cx,79			;numero de caracteres
+    mov     bx,0
+    mov     dh,14			;linha 0-29
+    mov     dl,29 			;coluna 0-79
+	mov	    byte[cor],preto
 
-    ;escrever o cabecalho
+apaga_title:
+	call    cursor
+    mov     al,[bx+apaga]
+	call    caracter
+    inc     bx	                ;proximo caracter
+	inc 	dl	                ;avanca a coluna
+    loop    apaga_title
+
+;escrever o cabecalho
     mov     cx,20			;numero de caracteres
     mov     bx,0
     mov     dh,14			;linha 0-29
@@ -365,12 +369,12 @@ esperar_entrada:
     je sair 
 
     cmp al,'y' ;'n' -> Sair
-    je jmp_start 
+    je jmp_salva
 
     jmp esperar_entrada
 
-jmp_start:
-    jmp ..start
+jmp_salva:
+    jmp salva_inicio
 pause:
     cmp word[vx], 0
     je unpause      
@@ -477,6 +481,14 @@ PADDLE_RIGHT: ; Move barra para a direita
 
 jmp_boost:
     jmp main
+
+salva_inicio: ;redefine as variaveis para seus valores iniciais
+    mov     word[vx],3
+    mov     word[vy],3
+    mov     word[x_barra], 270      
+    mov     word[x_barra_end], 370
+    mov     word[y_barra],  40     
+    jmp ..start
 ;===============================================================================================================;
 
 l4:
@@ -1106,6 +1118,7 @@ saved_vy    dw      0
                    
 fim         db      'Game Over reiniciar? (y/n)'
 title       db      'Press enter to start'
+apaga       db      '                                                                               '
 
 
 x_barra dw 270      ;posição inicial 
