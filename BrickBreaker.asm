@@ -6,24 +6,35 @@ segment code
     mov         ss,ax
     mov         sp,stacktop
 
-    ; Salvar modo corrente de video
+; Salvar modo corrente de video
     mov         ah,0Fh
     int         10h
     mov         [modo_anterior],al   
 
-    ; Alterar modo de video para gráfico 640x480 16 cores
+; Alterar modo de video para gráfico 640x480 16 cores
     mov         al,12h
     mov         ah,0
     int         10h
         
-    ; Limpa si, di, e define onde a bolinha começa
+; Limpa si, di, e define onde a bolinha começa
     xor si, si
     xor di, di
     mov cx, 0800h
     mov si, 319
     mov di, 240
 
-;escrever o cabecalho
+    mov     byte [cor], preto    ; apaga title
+    mov     ax, 200
+    push    ax
+    mov     ax, 240
+    push    ax
+    mov     ax, 430
+    push    ax
+    mov     ax, 255
+    push    ax
+    call    rect
+
+    ;escrever o cabecalho
     mov     cx,20			;numero de caracteres
     mov     bx,0
     mov     dh,14			;linha 0-29
@@ -42,12 +53,11 @@ inicio:
     mov ah,00h
     int 16h
 
-    cmp al,0Dh ;'n' -> Sair
+    cmp al,0Dh ;'enter' -> start no jogo
     je desenha_layout 
 
     jmp inicio
 
-; Desenhar layout
 desenha_layout:
     mov     byte [cor], preto    ; apaga title
     mov     ax, 230
@@ -226,9 +236,8 @@ desenha_blocos:    ;Largura: 95, Altura: 20, Espaçamento: 10
     mov     ax, 440
     push    ax
     call    rect
-    
 
-volta:
+main:
     ; Desenhar a bola
     mov     byte[cor],azul  
     mov     ax, si 
@@ -296,13 +305,13 @@ volta:
 	jnz jmp_tecla
     call colisao_barra
 
-loop volta
+loop main
 
 jmp_tecla:
     jmp check_com
 
 jmp_boost2:
-    jmp volta
+    jmp main
 
 ; Funções de colisão
 colisao_barra:      
@@ -317,19 +326,19 @@ colisao_barra:
 
     neg word[vy]
     
-    jmp volta
+    jmp main
 
 colisao_direita:
     neg word[vx]
-    jmp volta   
+    jmp main   
 
 colisao_cima:
     neg word[vy]
-    jmp volta
+    jmp main
 
 colisao_esquerda:
     neg word[vx]
-    jmp volta  
+    jmp main  
 
 colisao_baixo:
     mov     	cx,26
@@ -355,8 +364,13 @@ esperar_entrada:
     cmp al,4Eh ;'N' -> Sair
     je sair 
 
+    cmp al,'y' ;'n' -> Sair
+    je jmp_start 
+
     jmp esperar_entrada
 
+jmp_start:
+    jmp ..start
 pause:
     cmp word[vx], 0
     je unpause      
@@ -368,14 +382,14 @@ pause:
 
     mov word[vx], 0
     mov word[vy], 0
-    jmp volta
+    jmp main
 
 unpause:
     mov ax, word[saved_vx]
     mov word[vx], ax
     mov ax, word[saved_vy]
     mov word[vy], ax
-    jmp volta
+    jmp main
 
 check_com: ; checa tecla
     mov ah,00h
@@ -406,7 +420,7 @@ check_com: ; checa tecla
     cmp al,71h ;'q'
     je sair
 
-    jmp volta
+    jmp main
 
 sair:
     mov ah,0 ; set video mode
@@ -436,7 +450,7 @@ PADDLE_LEFT: ; Move barra para a esquerda
     sub word[x_barra], 10
     sub word[x_barra_end], 10
 
-    jmp volta
+    jmp main
 
 PADDLE_RIGHT: ; Move barra para a direita
     cmp word[x_barra_end],629
@@ -459,10 +473,10 @@ PADDLE_RIGHT: ; Move barra para a direita
     add word[x_barra], 10
     add word[x_barra_end], 10
 
-    jmp volta
+    jmp main
 
 jmp_boost:
-    jmp volta
+    jmp main
 ;===============================================================================================================;
 
 l4:
@@ -1090,13 +1104,13 @@ vy          dw      3
 saved_vx    dw      0
 saved_vy    dw      0
                    
-fim           db        'Game Over reiniciar? (y/n)'
-title           db      'Press enter to start'
+fim         db      'Game Over reiniciar? (y/n)'
+title       db      'Press enter to start'
 
 
 x_barra dw 270      ;posição inicial 
 x_barra_end dw 370  ;posição final
-y_barra dw  40   ;
+y_barra dw  40      ;altura da barra
 
 
 ;*************************************************************************
