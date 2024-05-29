@@ -1145,7 +1145,7 @@ saved_vx    dw      0
 saved_vy    dw      0
 
 title           db      'Trabalho 1 de Programacao de Sistemas Embarcados 2024/1 '
-stats           db      'Viktor  Kamei   00 x 00 Computador                      '
+stats           db      'Viktor e Felipe 00 x 00 Computador                      '
 fim           db        'Game Over reiniciar? (y/n)'
 
 vel_display db 1
