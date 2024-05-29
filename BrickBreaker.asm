@@ -6,59 +6,26 @@ segment code
     mov         ss,ax
     mov         sp,stacktop
 
-; salvar modo corrente de video(vendo como est� o modo de video da maquina)
+    ; Salvar modo corrente de video
     mov         ah,0Fh
     int         10h
     mov         [modo_anterior],al   
 
-; alterar modo de video para gr�fico 640x480 16 cores
+    ; Alterar modo de video para gráfico 640x480 16 cores
     mov         al,12h
     mov         ah,0
     int         10h
         
-;desenha circulos poe a bola no meio da tela
+    ; Limpa si, di, e define onde a bolinha começa
     xor si, si
     xor di, di
     mov cx, 0800h
     mov si, 319
     mov di, 240
 
-    ;escrever o cabecalho
-    mov     cx,56			;numero de caracteres
-    mov     bx,0
-    mov     dh,1			;linha 0-29
-    mov     dl,1 			;coluna 0-79
-	mov	    byte[cor],branco
-
-show_title:
-	call    cursor
-    mov     al,[bx+title]
-	call    caracter
-    inc     bx	                ;proximo caracter
-	inc 	dl	                ;avanca a coluna
-    loop    show_title
-
-    mov     cx,56			;numero de caracteres
-    mov     bx,0
-    mov     dh,2			;linha 0-29
-    mov     dl,1 			;coluna 0-79
-	mov	   byte[cor],branco
-
-show_stats:
-	call    cursor
-    mov     al,[bx+stats]
-	call    caracter
-    inc     bx	                ;proximo caracter
-	inc  	dl	                ;avanca a coluna
-    loop    show_stats
-    
-
-;desenhar retas
-
-    call    desenha_layout
-
+    ; Desenhar layout
 desenha_layout:
-    mov     byte[cor],branco_intenso    ;baixo
+    mov     byte[cor],branco_intenso    ; baixo
     mov     ax,0
     push        ax
     mov     ax,0
@@ -69,8 +36,7 @@ desenha_layout:
     push        ax
     call        line
 
-
-    mov     byte[cor],branco_intenso    ;esquerda
+    mov     byte[cor],branco_intenso    ; esquerda
     mov     ax,0
     push        ax
     mov     ax,0
@@ -81,7 +47,7 @@ desenha_layout:
     push        ax
     call        line
 
-    mov     byte[cor],branco_intenso    ;cima
+    mov     byte[cor],branco_intenso    ; cima
     mov     ax,0
     push        ax
     mov     ax,479
@@ -92,7 +58,7 @@ desenha_layout:
     push        ax
     call        line
 
-    mov     byte[cor],branco_intenso    ;direita
+    mov     byte[cor],branco_intenso    ; direita
     mov     ax,639
     push        ax
     mov     ax,0
@@ -101,18 +67,7 @@ desenha_layout:
     push        ax
     mov     ax,479
     push        ax
-    call        line
-
-    mov     byte[cor],branco_intenso    ;cabecalho
-    mov     ax,0
-    push        ax
-    mov     ax,430
-    push        ax
-    mov     ax, 640
-    push        ax
-    mov     ax,430
-    push        ax
-    call        line         
+    call        line 
 
 volta:
     ; Desenhar a bola
@@ -125,13 +80,11 @@ volta:
     push        ax
     call    full_circle
 
-    mov ax, 100 ; Por exemplo, 1000 ms (1 segundo).
-    mov ah, 86h
-    int 15h
-
-    pop ax
-    pop ax
-    pop ax
+    ; Delay utilizando a interrupção int 15h
+    mov     ah, 86h
+    mov     cx, 0
+    mov     dx, 5000 
+    int     15h
 
     ; Limpar a bola anterior (desenhar a bola em preto para apagar)
     mov     byte[cor],preto 
@@ -146,7 +99,7 @@ volta:
     pop ax
     pop ax
 
-    ;barra horizontal
+    ; Barra horizontal
     mov     byte[cor],branco_intenso    
     mov     ax, word[x_barra]
     push        ax
@@ -172,12 +125,13 @@ volta:
     cmp     si, 16
     jle     colisao_esquerda
 
-    cmp     di, 414
+    cmp     di, 464
     jge     colisao_cima
 
     cmp     di, 16
     jle     colisao_baixo
 
+    ; Verificar entrada do teclado
     mov ah,01h
 	int 16h
 	jnz jmp_tecla
@@ -191,9 +145,8 @@ jmp_tecla:
 jmp_boost2:
     jmp volta
 
-;funções de colisão abaixo
+; Funções de colisão
 colisao_barra:      
-
     cmp di, 50
     jg jmp_boost2
 
@@ -204,15 +157,11 @@ colisao_barra:
     jg jmp_boost2
 
     neg word[vy]
-    add word[unidades_jogador],1 
-    call update_texto_pontos_jogador_un
     
     jmp volta
 
 colisao_direita:
     neg word[vx]
-    add word[unidades_computador],1
-    call update_texto_pontos_computador_un  
     jmp volta   
 
 colisao_cima:
@@ -224,18 +173,18 @@ colisao_esquerda:
     jmp volta  
 
 colisao_baixo:
-    mov     	cx,26			;n�mero de caracteres
+    mov     	cx,26
     mov     	bx,0
-    mov     	dh,14			;linha 0-29
-    mov     	dl,26			;coluna 0-79
+    mov     	dh,14
+    mov     	dl,26
     mov		byte[cor],vermelho
 
 game_over:
     call    cursor
     mov     al,[bx+fim]
     call    caracter
-    inc     bx                  ;proximo caracter
-    inc     dl                  ;avanca a coluna
+    inc     bx
+    inc     dl
     loop    game_over
     
 esperar_entrada:
@@ -269,7 +218,7 @@ unpause:
     mov word[vy], ax
     jmp volta
 
-check_com: ;checa tecla
+check_com: ; checa tecla
     mov ah,00h
     int 16h
     
@@ -283,7 +232,7 @@ check_com: ;checa tecla
     cmp al,64h ;'d'
     je PADDLE_RIGHT
 
-    cmp al,50h ;'P' -> Move para direita
+    cmp al,50h ;'P' -> Pause
     je pause
     cmp al,70h ;'p'
     je pause
@@ -350,160 +299,6 @@ PADDLE_RIGHT: ; Move barra para a direita
 
 jmp_boost:
     jmp volta
-
-;=========================================================;
-;                 Funções Update placar                   ;
-;=========================================================;
-
-update_texto_pontos_jogador_un:
-    xor ax,ax
-    mov al,[unidades_jogador] 
-
-    cmp al,10
-    je update_texto_pontos_jogador_de
-    
-    add al,30h                       
-    mov [texto_pontos_jogador],al
-
-    mov     cx,1			;numero de caracteres
-    mov     bx,0
-    mov     dh,2			;linha 0-29
-    mov     dl,18 			;coluna 0-79
-	mov	   byte[cor],rosa
-
-    call un_jogador
-    jmp volta
-    
-
-un_jogador:
-	call    cursor
-    mov     al,[bx+texto_pontos_jogador]
-	call    caracter
-    dec     bx	                ;proximo caracter
-	inc  	dl	                ;avanca a coluna
-    loop    un_jogador
-    ret
-
-update_texto_pontos_jogador_de:
-    xor ax,ax
-    add byte[dezenas_jogador],1
-
-    mov al, [dezenas_jogador]
-
-    add al,30h                       
-    mov [texto_pontos_jogador],al
-
-    mov     cx,1			;numero de caracteres
-    mov     bx,0
-    mov     dh,2			;linha 0-29
-    mov     dl,17 			;coluna 0-79
-	mov	   byte[cor],rosa
-
-    call de_jogador
-    xor ax,ax
-    mov byte[unidades_jogador], 0
-    jmp update_texto_pontos_jogador_un
-    ret
-
-de_jogador:
-    call    cursor
-    mov     al,[bx+texto_pontos_jogador]
-	call    caracter
-    dec     bx	                ;proximo caracter
-	inc  	dl	                ;avanca a coluna
-    loop    de_jogador
-    ret
-
-un_computador:
-	call    cursor
-    mov     al,[bx+texto_pontos_computador]
-	call    caracter
-    dec     bx	                ;proximo caracter
-	inc  	dl	                ;avanca a coluna
-    loop    un_computador
-    ret
-
-update_texto_pontos_computador_un:
-    xor ax,ax
-    mov al,[unidades_computador]
-
-    cmp al,10
-    je update_texto_pontos_computador_de 
-
-    add al,30h                       
-    mov [texto_pontos_computador],al
-
-    mov     cx,1			;numero de caracteres
-    mov     bx,0
-    mov     dh,2			;linha 0-29
-    mov     dl,23 			;coluna 0-79
-	mov	   byte[cor],rosa
-
-    call un_computador
-    jmp volta
-
-de_computador:
-    call    cursor
-    mov     al,[bx+texto_pontos_computador]
-	call    caracter
-    dec     bx	                ;proximo caracter
-	inc  	dl	                ;avanca a coluna
-    loop    de_computador
-    ret
-
-update_texto_pontos_computador_de:
-    xor ax,ax
-    add byte[dezenas_computador],1
-
-    mov al, [dezenas_computador]
-
-    add al,30h                       
-    mov [texto_pontos_computador],al
-
-    mov     cx,1			;numero de caracteres
-    mov     bx,0
-    mov     dh,2			;linha 0-29
-    mov     dl,22 			;coluna 0-79
-	mov	   byte[cor],rosa
-
-    call de_computador
-    xor ax,ax
-    mov byte[unidades_computador], 0
-    jmp update_texto_pontos_computador_un
-    ret
-
-;=========================================================;
-
-;=========================================================;
-;                Update Display Velocidade                ;
-;=========================================================;
-
-display_vel:
-    call    cursor
-    mov     al,[bx+texto_vel_display]
-	call    caracter
-    dec     bx	                ;proximo caracter
-	inc  	dl	                ;avanca a coluna
-    loop display_vel
-    ret
-
-update_veldisp:
-    xor ax,ax
-    mov al,byte[vel_display] 
-    
-    add al,30h                       
-    mov [texto_vel_display],al
-
-    mov     cx,1			;numero de caracteres
-    mov     bx,0
-    mov     dh,2			;linha 0-29
-    mov     dl,53 			;coluna 0-79
-	mov	   byte[cor],rosa
-
-    call display_vel               
-    ret
-
-
 ;===============================================================================================================;
 
 l4:
@@ -1078,19 +873,6 @@ fill:
     pop bp
     ret 8
     
-delay: ; Esteja atento pois talvez seja importante salvar contexto (no caso, CX, o que NÃO foi feito aqui).
-    push cx
-    mov cx, word [velocidade] ; Carrega “velocidade” em cx (contador para loop)
-del2:
-    push cx ; Coloca cx na pilha para usa-lo em outro loop
-    mov cx, 0500h ; Teste modificando este valor
-del1:
-    loop del1 ; No loop del1, cx é decrementado até que volte a ser zero
-    pop cx ; Recupera cx da pilha
-    loop del2 ; No loop del2, cx é decrementado até que seja zero
-    pop cx
-    ret
-
 ;*******************************************************************
 segment data
 
@@ -1143,26 +925,13 @@ vx          dw      3
 vy          dw      3
 saved_vx    dw      0
 saved_vy    dw      0
-
-title           db      'Trabalho 1 de Programacao de Sistemas Embarcados 2024/1 '
-stats           db      'Viktor e Felipe 00 x 00 Computador                      '
+                   
 fim           db        'Game Over reiniciar? (y/n)'
-
-vel_display db 1
-texto_vel_display db '1','$'
 
 x_barra dw 270      ;posição inicial 
 x_barra_end dw 370  ;posição final
 y_barra dw  40   ;
 
-unidades_jogador db 0
-dezenas_jogador db 0
-
-unidades_computador db 0
-dezenas_computador db 0
-
-texto_pontos_jogador db '0','$'
-texto_pontos_computador db '0','$'
 
 ;*************************************************************************
 segment stack stack
