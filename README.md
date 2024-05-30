@@ -1,87 +1,94 @@
 # Brick-Breaker-Assembly
 
-This project is a classic Brick Breaker game developed in Assembly language. It runs on DOSBox, an x86 emulator with DOS.
+Este projeto é um clássico jogo de Brick Breaker desenvolvido em linguagem Assembly. Ele roda no DOSBox, um emulador x86 com DOS.
 
-## Table of Contents
+## Tabela de Conteúdos
 
-- [Introduction](#introduction)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
+- [Introdução](#introdução)
+- [Recursos](#recursos)
+- [Instalação](#instalação)
+- [Uso](#uso)
+- [Arquitetura do Projeto](#arquitetura-do-projeto)
 - [To-Do](#to-do)
-- [Contributing](#contributing)
-- [License](#license)
+- [Contribuição](#contribuição)
+- [Licença](#licença)
 
-## Introduction
+## Introdução
 
-Brick Breaker is a game where the player controls a paddle to hit a ball towards a wall of bricks. The goal is to destroy all the bricks by bouncing the ball off the paddle and into the bricks. The game ends when all bricks are destroyed or the ball falls below the paddle.
+Brick Breaker é um jogo onde o jogador controla uma raquete para bater uma bola em direção a uma parede de blocos. O objetivo é destruir todos os blocos fazendo a bola ricochetear na raquete e nos blocos. O jogo termina quando todos os blocos são destruídos ou a bola cai abaixo da raquete.
 
-This project is written in Assembly language, which provides a unique challenge and learning experience. It runs on DOSBox, an x86 emulator with DOS, making it accessible on modern operating systems.
+Este projeto é escrito em linguagem Assembly, o que proporciona um desafio e uma experiência de aprendizado única. Ele roda no DOSBox, um emulador x86 com DOS, tornando-o acessível em sistemas operacionais modernos.
 
-## Features
+## Recursos
 
-- Paddle movement using keyboard controls.
-- Ball movement and collision with walls and paddle.
-- Simple graphics rendered in a DOS environment.
+- Movimento da raquete usando controles de teclado.
+- Movimento da bola e colisão com paredes e raquete.
+- Gráficos simples renderizados em um ambiente DOS.
+- Jogo pausável e reiniciável.
+- Detecção de colisão com blocos e remoção dos mesmos.
 
-## Installation
+## Instalação
 
-To run this game, you need DOSBox installed on your computer. Follow these steps to set it up:
+Para rodar este jogo, você precisa do DOSBox instalado no seu computador. Siga estes passos para configurá-lo:
 
-1. **Download and Install DOSBox:**
-   - [DOSBox Download](https://www.dosbox.com/download.php?main=1)
+1. **Baixar e Instalar o DOSBox:**
+   - [Download do DOSBox](https://www.dosbox.com/download.php?main=1)
 
-2. **Clone the Repository:**
-    ```sh
-    git clone https://github.com/yourusername/Brick-Breaker-Assembly.git
+2. **Clonar o Repositório:**
+    ```
+    git clone https://github.com/seuusuario/Brick-Breaker-Assembly.git
     cd Brick-Breaker-Assembly
     ```
 
-3. **Compile the Assembly Code:**
-   - You need an assembler like NASM or MASM to compile the code.
-   - For NASM:
+3. **Compilar o Código Assembly:**
+   - Você precisa de um assembler como NASM ou MASM para compilar o código.
+   - Para NASM:
      ```
      nasm -f bin brick_breaker.asm -o brick_breaker.com
      ```
 
-4. **Run the Game in DOSBox:**
-   - Open DOSBox.
-   - Mount the game directory:
-     ```sh
+4. **Rodar o Jogo no DOSBox:**
+   - Abra o DOSBox.
+   - Monte o diretório do jogo:
+     ```
      mount c /path/to/Brick-Breaker-Assembly
      c:
      ```
-   - Run the game:
-     ```sh
+   - Rode o jogo:
+     ```
      brick_breaker.com
      ```
 
-## Usage
+## Uso
 
-- **Controls:**
-  - Use the arrow keys to move the paddle left and right.
-  - Press `P` to pause and resume the game.
-  - Press `Q` to exit the game.
+- **Controles:**
+  - Use as teclas `a` e `d` ou as setas para mover a raquete para a esquerda e direita.
+  - Pressione `P` para pausar e retomar o jogo.
+  - Pressione `Q` para sair do jogo.
+  - Pressione `Enter` para iniciar o jogo.
+  - Após o fim do jogo, pressione `Y` para reiniciar ou `N` para sair.
 
-- **Objective:**
-  - The objective of the game is to destroy all the bricks by bouncing the ball off the paddle.
+- **Objetivo:**
+  - O objetivo do jogo é destruir todos os blocos fazendo a bola ricochetear na raquete e nos blocos.
+  - O jogo termina quando todos os blocos são destruídos ou a bola cai abaixo da raquete.
 
 ## To-Do
 
-The following features are currently being worked on or are planned for future updates:
+- Detecção de colisão com blocos.
+- Remoção de blocos ao serem atingidos.
+- Implementação da lógica de vitória do jogo.
+- Melhor organização do código, dividindo funções.
 
-- Block collision detection
-- Erasing blocks when hit
-- Implementing game-winning logic
-- Splitting game functions for better code organization
-- 
+## Contribuição
 
-## Contributing
+Contribuições são bem-vindas! Se você deseja contribuir, siga estes passos:
 
-Contributions are welcome! If you'd like to contribute, please follow these steps:
+1. Faça um fork do repositório.
+2. Crie uma nova branch (`git checkout -b feature-branch`).
+3. Commit suas mudanças (`git commit -am 'Add new feature'`).
+4. Push para a branch (`git push origin feature-branch`).
+5. Crie um novo Pull Request.
 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Commit your changes (`git commit -am 'Add new feature'`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Create a new Pull Request.
+## Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
