@@ -108,138 +108,72 @@ desenha_layout:
     call        line 
 
 desenha_blocos:    ;Largura: 95, Altura: 20, Espaçamento: 10
-    ;1,1
-    mov     byte [cor], magenta_claro   
-    mov     ax, 10
-    push    ax
-    mov     ax, 450
-    push    ax
-    mov     ax, 105
-    push    ax
-    mov     ax, 470
-    push    ax
-    call    rect
     ;2,1 
-    mov     byte [cor], vermelho          
-    mov     ax, 10
-    push    ax
-    mov     ax, 420
-    push    ax
-    mov     ax, 105
-    push    ax
-    mov     ax, 440
-    push    ax
-    call    rect
-    ;1,2 
-    mov     byte [cor], azul              
-    mov     ax, 115
-    push    ax
-    mov     ax, 450
-    push    ax
-    mov     ax, 210
-    push    ax
-    mov     ax, 470
-    push    ax
-    call    rect
+        mov     byte [cor], vermelho          
+        mov     ax, 10
+        push    ax
+        mov     ax, 420
+        push    ax
+        mov     ax, 105
+        push    ax
+        mov     ax, 440
+        push    ax
+        call    rect
     ;2,2
-    mov     byte [cor], amarelo           
-    mov     ax, 115
-    push    ax
-    mov     ax, 420
-    push    ax
-    mov     ax, 210
-    push    ax
-    mov     ax, 440
-    push    ax
-    call    rect
-    ;1,3
-    mov     byte [cor], cyan   
-    mov     ax, 220
-    push    ax
-    mov     ax, 450
-    push    ax
-    mov     ax, 315
-    push    ax
-    mov     ax, 470
-    push    ax
-    call    rect
+        mov     byte [cor], amarelo           
+        mov     ax, 115
+        push    ax
+        mov     ax, 420
+        push    ax
+        mov     ax, 210
+        push    ax
+        mov     ax, 440
+        push    ax
+        call    rect
     ;2,3
-    mov     byte [cor], verde_claro   
-    mov     ax, 220
-    push    ax
-    mov     ax, 420
-    push    ax
-    mov     ax, 315
-    push    ax
-    mov     ax, 440
-    push    ax
-    call    rect
-    ;1,4
-    mov     byte [cor], verde_claro   
-    mov     ax, 325
-    push    ax
-    mov     ax, 450
-    push    ax
-    mov     ax, 420
-    push    ax
-    mov     ax, 470
-    push    ax
-    call    rect
+        mov     byte [cor], verde_claro   
+        mov     ax, 220
+        push    ax
+        mov     ax, 420
+        push    ax
+        mov     ax, 315
+        push    ax
+        mov     ax, 440
+        push    ax
+        call    rect
     ;2,4
-    mov     byte [cor], cyan   
-    mov     ax, 325
-    push    ax
-    mov     ax, 420
-    push    ax
-    mov     ax, 420
-    push    ax
-    mov     ax, 440
-    push    ax
-    call    rect
-    ;1,5
-    mov     byte [cor], amarelo   
-    mov     ax, 430
-    push    ax
-    mov     ax, 450
-    push    ax
-    mov     ax, 525
-    push    ax
-    mov     ax, 470
-    push    ax
-    call    rect
+        mov     byte [cor], cyan   
+        mov     ax, 325
+        push    ax
+        mov     ax, 420
+        push    ax
+        mov     ax, 420
+        push    ax
+        mov     ax, 440
+        push    ax
+        call    rect
     ;2,5
-    mov     byte [cor], azul   
-    mov     ax, 430
-    push    ax
-    mov     ax, 420
-    push    ax
-    mov     ax, 525
-    push    ax
-    mov     ax, 440
-    push    ax
-    call    rect
-    ;1,6
-    mov     byte [cor], vermelho   
-    mov     ax, 535
-    push    ax
-    mov     ax, 450
-    push    ax
-    mov     ax, 630
-    push    ax
-    mov     ax, 470
-    push    ax
-    call    rect
+        mov     byte [cor], azul   
+        mov     ax, 430
+        push    ax
+        mov     ax, 420
+        push    ax
+        mov     ax, 525
+        push    ax
+        mov     ax, 440
+        push    ax
+        call    rect
     ;2,6
-    mov     byte [cor], magenta_claro 
-    mov     ax, 535
-    push    ax
-    mov     ax, 420
-    push    ax
-    mov     ax, 630
-    push    ax
-    mov     ax, 440
-    push    ax
-    call    rect
+        mov     byte [cor], magenta_claro 
+        mov     ax, 535
+        push    ax
+        mov     ax, 420
+        push    ax
+        mov     ax, 630
+        push    ax
+        mov     ax, 440
+        push    ax
+        call    rect
 
 main:
     ; Desenhar a bola
@@ -303,18 +237,17 @@ main:
     cmp     di, 16
     jle     colisao_baixo
 
-    ; Verificar colisão com blocos
-    call    colisao_blocos
-
     ; Verificar entrada do teclado
     mov ah,01h
 	int 16h
-	jnz jmp_tecla
+	jnz jmp_check
     call colisao_barra
 
+    ; Verificar colisão com blocos
+    call    colisao_blocos
 loop main
 
-jmp_tecla:
+jmp_check:
     jmp check_com
 
 jmp_boost2:
@@ -350,12 +283,12 @@ colisao_esquerda:
     neg word[vx]
     jmp main  
 
-colisao_baixo:
-    mov     	cx,26
+colisao_baixo:        ;esta colisão é diferente pois é usada para ser o game over
+    mov     	cx,26 ;seta config para escrever game over
     mov     	bx,0
     mov     	dh,14
     mov     	dl,26
-    mov		byte[cor],vermelho
+    mov		    byte[cor],vermelho
 
 game_over:
     call    cursor
@@ -378,51 +311,78 @@ esperar_entrada:
     je jmp_salva
 
     jmp esperar_entrada
-
+jmp_salva:
+    jmp salva_inicio
+    
 colisao_blocos:
-    mov     cx, num_rects
-    xor     bx, bx           ; Inicializa BX para o índice dos blocos
+    mov     cx, num_rects   ; Número de retângulos
+    xor     bx, bx          ; Zera BX para o índice dos blocos
 
 verificar_bloco:
     ; Carregar coordenadas do bloco
-    mov     si, bx
-    shl     si, 1            ; Multiplica BX por 2 (porque cada entrada é de 2 bytes)
-
-    mov     ax, [rect_x1 + si]
-    cmp     word[si], ax
+    mov     ax, rect_x1[bx]
+    cmp     si, ax
     jl      proximo_bloco
 
-    mov     ax, [rect_x2 + si]
-    cmp     word[si], ax
+    mov     ax, rect_x2[bx]
+    cmp     si, ax
     jg      proximo_bloco
 
-    mov     ax, [rect_y1 + si]
-    cmp     word[di], ax
+    mov     ax, rect_y1[bx]
+    cmp     di, ax
     jl      proximo_bloco
 
-    mov     ax, [rect_y2 + si]
-    cmp     word[di], ax
+    mov     ax, rect_y2[bx]
+    cmp     di, ax
     jg      proximo_bloco
 
     ; Colisão detectada - Apagar o bloco e inverter a direção
     mov     byte [cor], preto
-    push    word [rect_x1 + si]
-    push    word [rect_y1 + si]
-    push    word [rect_x2 + si]
-    push    word [rect_y2 + si]
+    mov     ax, rect_x1[bx]
+    push    ax
+    mov     ax, rect_y1[bx]
+    push    ax
+    mov     ax, rect_x2[bx]
+    push    ax
+    mov     ax, rect_y2[bx]
+    push    ax
     call    rect
 
-    ; Inverter a direção da bola
+    ; Determinar eixo de colisão e inverter direção da bola
+    ; Verificar se a colisão ocorreu nos lados do bloco (eixo vertical)
+    mov     ax, rect_x1[bx]
+    mov     dx, rect_x2[bx]
+    sub     dx, ax             ; Largura do bloco
+    mov     cx, ax             ; Coordenada x1
+    add     cx, dx             ; Coordenada x2
+    shr     cx, 1              ; Coordenada x do centro do bloco
+
+    ; Verificar colisão vertical (esquerda/direita)
+    mov     ax, si
+    sub     ax, cx
+    jns     eixo_vertical
+    neg     ax
+
+eixo_vertical:
+    cmp     ax, word [vx]
+    jae     colisao_horizontal
+    neg     word [vx]
+    jmp     sair_colisao
+
+colisao_horizontal:
     neg     word [vy]
-    jmp     main
+
+sair_colisao:
+    jmp     continuar_verificacao
 
 proximo_bloco:
-    inc     bx
-    loop    verificar_bloco
-    ret 
+    inc     bx              ; Próximo bloco
 
-jmp_salva:
-    jmp salva_inicio
+continuar_verificacao:
+    cmp     bx, cx
+    jl      verificar_bloco
+
+    jmp main
 
 pause:
     cmp word[vx], 0
