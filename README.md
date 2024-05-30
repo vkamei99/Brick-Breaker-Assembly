@@ -40,7 +40,7 @@ To run this game, you need DOSBox installed on your computer. Follow these steps
 3. **Compile the Assembly Code:**
    - You need an assembler like NASM or MASM to compile the code.
    - For NASM:
-     ```sh
+     ```
      nasm -f bin brick_breaker.asm -o brick_breaker.com
      ```
 
