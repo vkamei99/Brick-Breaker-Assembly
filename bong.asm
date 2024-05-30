@@ -241,10 +241,12 @@ main:
     mov ah,01h
 	int 16h
 	jnz jmp_check
-    call colisao_barra
 
+    ;Verifica a colisão com a barra
+    cmp     di, 55
+    jle      colisao_barra
     ; Verificar colisão com blocos
-    call    colisao_blocos
+    ;call    colisao_blocos
 loop main
 
 jmp_check:
@@ -258,9 +260,6 @@ jmp_sair:
 
 ; Funções de colisão
 colisao_barra:      
-    cmp di, 50
-    jg jmp_boost2
-
     cmp si,word[x_barra]
     jl jmp_boost2
 
@@ -313,76 +312,8 @@ esperar_entrada:
     jmp esperar_entrada
 jmp_salva:
     jmp salva_inicio
-    
 colisao_blocos:
-    mov     cx, num_rects   ; Número de retângulos
-    xor     bx, bx          ; Zera BX para o índice dos blocos
-
-verificar_bloco:
-    ; Carregar coordenadas do bloco
-    mov     ax, rect_x1[bx]
-    cmp     si, ax
-    jl      proximo_bloco
-
-    mov     ax, rect_x2[bx]
-    cmp     si, ax
-    jg      proximo_bloco
-
-    mov     ax, rect_y1[bx]
-    cmp     di, ax
-    jl      proximo_bloco
-
-    mov     ax, rect_y2[bx]
-    cmp     di, ax
-    jg      proximo_bloco
-
-    ; Colisão detectada - Apagar o bloco e inverter a direção
-    mov     byte [cor], preto
-    mov     ax, rect_x1[bx]
-    push    ax
-    mov     ax, rect_y1[bx]
-    push    ax
-    mov     ax, rect_x2[bx]
-    push    ax
-    mov     ax, rect_y2[bx]
-    push    ax
-    call    rect
-
-    ; Determinar eixo de colisão e inverter direção da bola
-    ; Verificar se a colisão ocorreu nos lados do bloco (eixo vertical)
-    mov     ax, rect_x1[bx]
-    mov     dx, rect_x2[bx]
-    sub     dx, ax             ; Largura do bloco
-    mov     cx, ax             ; Coordenada x1
-    add     cx, dx             ; Coordenada x2
-    shr     cx, 1              ; Coordenada x do centro do bloco
-
-    ; Verificar colisão vertical (esquerda/direita)
-    mov     ax, si
-    sub     ax, cx
-    jns     eixo_vertical
-    neg     ax
-
-eixo_vertical:
-    cmp     ax, word [vx]
-    jae     colisao_horizontal
-    neg     word [vx]
-    jmp     sair_colisao
-
-colisao_horizontal:
-    neg     word [vy]
-
-sair_colisao:
-    jmp     continuar_verificacao
-
-proximo_bloco:
-    inc     bx              ; Próximo bloco
-
-continuar_verificacao:
-    cmp     bx, cx
-    jl      verificar_bloco
-
-    jmp main
+   jmp main
 
 pause:
     cmp word[vx], 0
