@@ -23,8 +23,8 @@ segment code
     mov si, 319
     mov di, 240
 
-;def
-    mov     cx,79			;numero de caracteres
+;apaga o titulo ;usado para apagar o texto de game over
+    mov     cx,79			;proximo caracter
     mov     bx,0
     mov     dh,14			;linha 0-29
     mov     dl,29 			;coluna 0-79
@@ -63,7 +63,7 @@ inicio:
     jmp inicio
 
 desenha_layout:
-    mov     byte [cor], preto    ; apaga title
+    mov     byte [cor], preto    ; apaga title com rect
     mov     ax, 230
     push    ax
     mov     ax, 240
@@ -303,6 +303,9 @@ main:
     cmp     di, 16
     jle     colisao_baixo
 
+    ; Verificar colisão com blocos
+    call    colisao_blocos
+
     ; Verificar entrada do teclado
     mov ah,01h
 	int 16h
@@ -316,6 +319,9 @@ jmp_tecla:
 
 jmp_boost2:
     jmp main
+
+jmp_sair:
+    jmp sair
 
 ; Funções de colisão
 colisao_barra:      
@@ -364,17 +370,60 @@ esperar_entrada:
     int 16h
 
     cmp al,6Eh ;'n' -> Sair
-    je sair 
+    je jmp_sair 
     cmp al,4Eh ;'N' -> Sair
-    je sair 
+    je jmp_sair 
 
     cmp al,'y' ;'n' -> Sair
     je jmp_salva
 
     jmp esperar_entrada
 
+colisao_blocos:
+    mov     cx, num_rects
+    xor     bx, bx           ; Inicializa BX para o índice dos blocos
+
+verificar_bloco:
+    ; Carregar coordenadas do bloco
+    mov     si, bx
+    shl     si, 1            ; Multiplica BX por 2 (porque cada entrada é de 2 bytes)
+
+    mov     ax, [rect_x1 + si]
+    cmp     word[si], ax
+    jl      proximo_bloco
+
+    mov     ax, [rect_x2 + si]
+    cmp     word[si], ax
+    jg      proximo_bloco
+
+    mov     ax, [rect_y1 + si]
+    cmp     word[di], ax
+    jl      proximo_bloco
+
+    mov     ax, [rect_y2 + si]
+    cmp     word[di], ax
+    jg      proximo_bloco
+
+    ; Colisão detectada - Apagar o bloco e inverter a direção
+    mov     byte [cor], preto
+    push    word [rect_x1 + si]
+    push    word [rect_y1 + si]
+    push    word [rect_x2 + si]
+    push    word [rect_y2 + si]
+    call    rect
+
+    ; Inverter a direção da bola
+    neg     word [vy]
+    jmp     main
+
+proximo_bloco:
+    inc     bx
+    loop    verificar_bloco
+    ret 
+
 jmp_salva:
     jmp salva_inicio
+
 pause:
     cmp word[vx], 0
     je unpause      
@@ -1125,7 +1174,11 @@ x_barra dw 270      ;posição inicial
 x_barra_end dw 370  ;posição final
 y_barra dw  40      ;altura da barra
 
-
+rect_x1     dw  10, 115, 220, 325, 430, 535     ; Coordenadas x1 de cada retângulo
+rect_y1     dw  420, 420, 420, 420, 420, 420    ; Coordenadas y1 de cada retângulo
+rect_x2     dw  105, 210, 315, 420, 525, 630    ; Coordenadas x2 de cada retângulo
+rect_y2     dw  440, 440, 440, 440, 440, 440    ; Coordenadas y2 de cada retângulo
+num_rects   db  6                               ; Número de retângulos
 ;*************************************************************************
 segment stack stack
             resb        512
