@@ -24,10 +24,10 @@ segment code
     mov di, 240
 
 ;apaga o titulo ;usado para apagar o texto de game over
-    mov     cx,79			;proximo caracter
+    mov     cx,50			;proximo caracter
     mov     bx,0
     mov     dh,14			;linha 0-29
-    mov     dl,29 			;coluna 0-79
+    mov     dl,10 			;coluna 0-79
 	mov	    byte[cor],preto
 
 apaga_title:
@@ -243,7 +243,7 @@ desenha_blocos:    ;Largura: 95, Altura: 20, Espaçamento: 10
 
 main:
     ; Desenhar a bola
-    mov     byte[cor],cinza  
+    mov     byte[cor],branco_intenso  
     mov     ax, si 
     push        ax
     mov     ax, di
@@ -326,11 +326,11 @@ jmp_sair:
 
 ; Funções de colisão
 colisao_barra:      
-    ;cmp si,word[x_barra]
-    ;jl jmp_boost2
+    cmp si,word[x_barra]
+    jl jmp_boost2
 
-    ;cmp si,word[x_barra_end]
-    ;jg jmp_boost2
+    cmp si,word[x_barra_end]
+    jg jmp_boost2
 
     neg word[vy]
     jmp main
@@ -389,6 +389,21 @@ pause:
 
     mov word[vx], 0
     mov word[vy], 0
+
+    mov     	cx,6 ;seta config para escrever paused
+    mov     	bx,0
+    mov     	dh,14
+    mov     	dl,36 ;dl=coluna  (0-79)
+    mov		    byte[cor],branco_intenso
+
+loop_pause_text:
+    call    cursor
+    mov     al,[bx+paused]
+    call    caracter
+    inc     bx
+    inc     dl
+    loop    loop_pause_text
+
     jmp main
 
 unpause:
@@ -396,6 +411,21 @@ unpause:
     mov word[vx], ax
     mov ax, word[saved_vy]
     mov word[vy], ax
+
+    mov     	cx,50 ;seta config para apagar paused
+    mov     	bx,0
+    mov     	dh,14
+    mov     	dl,10 ;dl=coluna  (0-79)
+    mov		    byte[cor],preto
+
+loop_apaga_pause_text:
+    call    cursor
+    mov     al,[bx+apaga]
+    call    caracter
+    inc     bx
+    inc     dl
+    loop    loop_apaga_pause_text
+    
     jmp main
 
 check_com: ; checa tecla
@@ -418,9 +448,9 @@ check_com: ; checa tecla
     je PADDLE_LEFT
 
     cmp al,50h ;'P' -> Pause
-    je pause
+    je jmp_pause
     cmp al,70h ;'p'
-    je pause
+    je jmp_pause
 
     cmp al,51h ;'Q' -> Sair
     je sair
@@ -428,7 +458,8 @@ check_com: ; checa tecla
     je sair
 
     jmp main
-
+jmp_pause:
+    jmp pause
 sair:
     mov ah,0 ; set video mode
     mov al,[modo_anterior] ; recupera o modo anterior
@@ -723,6 +754,7 @@ bloco6:
 termina_checagem:
     cmp     word[pontos], 12
     jge     winner
+    jmp     main
 
 winner:
     mov     	cx,39 ;seta config para escrever texto de vencedor
@@ -1368,8 +1400,9 @@ saved_vy    dw      0
                    
 title       db      'Press enter to start'
 fim         db      'Game Over! reiniciar? (y/n)'
-win      db      'Parabens, Voce Ganhou! reiniciar? (y/n)'
-apaga       db      '                                                                               '
+win         db      'Parabens, Voce Ganhou! reiniciar? (y/n)'
+paused      db      'Paused'
+apaga       db      '                                                  '
 
 
 x_barra     dw      270      ;posição inicial 
