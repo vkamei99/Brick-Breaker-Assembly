@@ -243,7 +243,7 @@ desenha_blocos:    ;Largura: 95, Altura: 20, Espaçamento: 10
 
 main:
     ; Desenhar a bola
-    mov     byte[cor],azul  
+    mov     byte[cor],cinza  
     mov     ax, si 
     push        ax
     mov     ax, di
@@ -326,13 +326,11 @@ jmp_sair:
 
 ; Funções de colisão
 colisao_barra:      
+    ;cmp si,word[x_barra]
+    ;jl jmp_boost2
 
-
-    cmp si,word[x_barra]
-    jl jmp_boost2
-
-    cmp si,word[x_barra_end]
-    jg jmp_boost2
+    ;cmp si,word[x_barra_end]
+    ;jg jmp_boost2
 
     neg word[vy]
     jmp main
@@ -509,17 +507,25 @@ colisao_blocos:
 
     cmp     di, ax  ;colisão com a parte de baixo
     jl      bloco2
-    
-    add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
-
+    add     ax, 30  ;soma 30 pixels para a ter a colisão da parte de cima
     cmp     di, ax  ;colisão com a parte de cima
     jg      bloco2
 
-    cmp     si, 15  ;colisão direita
+    cmp     si, 5  ;colisão direita
     jl      bloco2
-
-    cmp     si, 115 ;colisão esquerda
+    cmp     si, 110 ;colisão esquerda
     jg      bloco2
+
+    cmp     di, ax  ;colisão com a parte de baixo
+    jg      neg[vy]
+    add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
+    cmp     di, ax  ;colisão com a parte de cima
+    jl      neg[vy]
+
+    cmp     si, 5  ;colisão direita
+    jg      neg[vx]
+    cmp     si, 110 ;colisão esquerda
+    jl      neg[vx]
 
     ;apaga blocos da coluna 1
     mov     byte [cor], preto 
@@ -550,15 +556,12 @@ bloco2:
 
     cmp     di, ax  ;colisão com a parte de baixo
     jl      bloco3
-    
     add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
-
     cmp     di, ax  ;colisão com a parte de cima
     jg      bloco3
 
-    cmp     si, 120  ;colisão direita
+    cmp     si, 110  ;colisão direita
     jl      bloco3
-
     cmp     si, 215 ;colisão esquerda
     jg      bloco3
 
@@ -590,15 +593,12 @@ bloco3:
 
     cmp     di, ax  ;colisão com a parte de baixo
     jl      bloco4
-    
     add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
-
     cmp     di, ax  ;colisão com a parte de cima
     jg      bloco4
 
-    cmp     si, 225  ;colisão direita
+    cmp     si, 215  ;colisão direita
     jl      bloco4
-
     cmp     si, 320 ;colisão esquerda
     jg      bloco4
 
@@ -630,15 +630,12 @@ bloco4:
 
     cmp     di, ax  ;colisão com a parte de baixo
     jl      bloco5
-    
     add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
-
     cmp     di, ax  ;colisão com a parte de cima
     jg      bloco5
 
-    cmp     si, 330  ;colisão direita
+    cmp     si, 320  ;colisão direita
     jl      bloco5
-
     cmp     si, 425 ;colisão esquerda
     jg      bloco5
 
@@ -669,15 +666,12 @@ bloco5:
 
     cmp     di, ax  ;colisão com a parte de baixo
     jl      bloco6
-    
     add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
-
     cmp     di, ax  ;colisão com a parte de cima
     jg      bloco6
 
-    cmp     si, 435  ;colisão direita
+    cmp     si, 425  ;colisão direita
     jl      bloco6
-
     cmp     si, 530 ;colisão esquerda
     jg      bloco6
 
@@ -708,20 +702,17 @@ bloco6:
 
     cmp     di, ax  ;colisão com a parte de baixo
     jl      termina_checagem
-    
     add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
-
     cmp     di, ax  ;colisão com a parte de cima
     jg      termina_checagem
 
     cmp     si, 540  ;colisão direita
     jl      termina_checagem
-
     cmp     si, 635 ;colisão esquerda
     jg      termina_checagem
 
     mov     byte [cor], preto ;apaga blocos da coluna 6
-    mov     ax, 535          ;x1        
+    mov     ax, 525          ;x1        
     push    ax
     mov     ax, word[y6]    ;y1
     push    ax
@@ -743,14 +734,13 @@ bloco6:
 termina_checagem:
     cmp     word[pontos], 12
     jge     winner
-    jmp     main
 
 winner:
     mov     	cx,39 ;seta config para escrever texto de vencedor
     mov     	bx,0
     mov     	dh,14
     mov     	dl,20
-    mov		    byte[cor],vermelho
+    mov		    byte[cor],verde
 
 winner_text:
     call    cursor
