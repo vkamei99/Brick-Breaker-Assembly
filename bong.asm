@@ -108,6 +108,72 @@ desenha_layout:
     call        line 
 
 desenha_blocos:    ;Largura: 95, Altura: 20, Espaçamento: 10
+    ;1,1
+        mov     byte [cor], magenta_claro   
+        mov     ax, 10
+        push    ax
+        mov     ax, 450
+        push    ax
+        mov     ax, 105
+        push    ax
+        mov     ax, 470
+        push    ax
+        call    rect
+    ;1,2 
+        mov     byte [cor], azul              
+        mov     ax, 115
+        push    ax
+        mov     ax, 450
+        push    ax
+        mov     ax, 210
+        push    ax
+        mov     ax, 470
+        push    ax
+        call    rect
+    ;1,3
+        mov     byte [cor], cyan   
+        mov     ax, 220
+        push    ax
+        mov     ax, 450
+        push    ax
+        mov     ax, 315
+        push    ax
+        mov     ax, 470
+        push    ax
+        call    rect
+    ;1,4
+        mov     byte [cor], verde_claro   
+        mov     ax, 325
+        push    ax
+        mov     ax, 450
+        push    ax
+        mov     ax, 420
+        push    ax
+        mov     ax, 470
+        push    ax
+        call    rect
+    ;1,5
+        mov     byte [cor], amarelo   
+        mov     ax, 430
+        push    ax
+        mov     ax, 450
+        push    ax
+        mov     ax, 525
+        push    ax
+        mov     ax, 470
+        push    ax
+        call    rect
+    ;1,6
+        mov     byte [cor], vermelho   
+        mov     ax, 535
+        push    ax
+        mov     ax, 450
+        push    ax
+        mov     ax, 630
+        push    ax
+        mov     ax, 470
+        push    ax
+        call    rect
     ;2,1 
         mov     byte [cor], vermelho          
         mov     ax, 10
@@ -431,161 +497,245 @@ salva_inicio: ;redefine as variaveis para seus valores iniciais
     jmp ..start
 
 colisao_blocos:
-    ;bloco 1
-    cmp di, 440
-    jg bloco2
+;colisão dos blocos da coluna 1
+    mov     ax,word[y1] ;posição y inicial dos blocos da coluna 1
+    sub     ax,10        ;diminui 10 por causa do raio da bola
 
-    cmp di, 420
-    jl bloco2
+    cmp     di, ax  ;colisão com a parte de baixo
+    jl      bloco2
+    
+    add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
 
-    cmp si, 10
-    jl bloco2
+    cmp     di, ax  ;colisão com a parte de cima
+    jg      bloco2
 
-    cmp si, 105
-    jg bloco2
+    cmp     si, 15  ;colisão direita
+    jl      bloco2
 
-    mov byte [cor], preto
-    mov ax, 10    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 105    
-    push ax
-    mov ax, 440    
-    push ax
-    call rect
+    cmp     si, 115 ;colisão esquerda
+    jg      bloco2
 
-    neg word [vy]
+    ;apaga blocos da coluna 1
+    mov     byte [cor], preto 
+    mov     ax, 10          ;x1        
+    push    ax
+    mov     ax, word[y1]    ;y1
+    push    ax
+    mov     ax, 105         ;x2
+    push    ax
+    mov     bx, word[y1]
+    add     bx, 20          ;soma 20
+    mov     ax, bx          ;y2
+    push    ax
+    call    rect
+
+    mov     ax, word[y1]
+    add     ax, 30          ;adiciona o espaçamento e o tamanho dos blocos para a nova posição
+    mov     word[y1],ax     ;salva novo valor de y1
+    mov     ax, word[pontos]
+    add     ax, 1
+    mov     word[pontos], ax
+    neg     word [vy]
 
 bloco2:
-    cmp di, 440
-    jg bloco3
+    ;colisão dos blocos da coluna 2
+    mov     ax,word[y2] ;posição y inicial dos blocos da coluna 2
+    sub     ax,10        ;soma 5 por causa do raio da bola
 
-    cmp di, 420
-    jl bloco3
+    cmp     di, ax  ;colisão com a parte de baixo
+    jl      bloco3
+    
+    add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
 
-    cmp si, 115
-    jl bloco3
+    cmp     di, ax  ;colisão com a parte de cima
+    jg      bloco3
 
-    cmp si, 210
-    jg bloco3
+    cmp     si, 120  ;colisão direita
+    jl      bloco3
 
-    mov byte [cor], preto
-    mov ax, 115    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 210    
-    push ax
-    mov ax, 440    
-    push ax
-    call rect
+    cmp     si, 215 ;colisão esquerda
+    jg      bloco3
 
-    neg word [vy]
+    mov     byte [cor], preto ;apaga blocos da coluna 2
+    mov     ax, 115          ;x1        
+    push    ax
+    mov     ax, word[y2]    ;y1
+    push    ax
+    mov     ax, 210         ;x2
+    push    ax
+    mov     bx, word[y2]
+    add     bx, 20          ;soma 20
+    mov     ax, bx          ;y2
+    push    ax
+    call    rect
+
+    mov     ax, word[y2]
+    add     ax, 30          ;adiciona o espaçamento e o tamanho dos blocos para a nova posição
+    mov     word[y2],ax     ;salva novo valor de y2
+    mov     ax, word[pontos]
+    add     ax, 1
+    mov     word[pontos], ax
+    neg     word [vy]
+
 bloco3:
-    cmp di, 440
-    jg bloco4
+    ;colisão dos blocos da coluna 3
+    mov     ax,word[y3] ;posição y inicial dos blocos da coluna 3
+    sub     ax,10        ;soma 5 por causa do raio da bola
 
-    cmp di, 420
-    jl bloco4
+    cmp     di, ax  ;colisão com a parte de baixo
+    jl      bloco4
+    
+    add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
 
-    cmp si, 220
-    jl bloco4
+    cmp     di, ax  ;colisão com a parte de cima
+    jg      bloco4
 
-    cmp si, 315
-    jg bloco4
+    cmp     si, 225  ;colisão direita
+    jl      bloco4
 
-    mov byte [cor], preto
-    mov ax, 220    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 315    
-    push ax
-    mov ax, 440    
-    push ax
-    call rect
+    cmp     si, 320 ;colisão esquerda
+    jg      bloco4
 
-    neg word [vy]
+    mov     byte [cor], preto ;apaga blocos da coluna 3
+    mov     ax, 220          ;x1        
+    push    ax
+    mov     ax, word[y3]    ;y1
+    push    ax
+    mov     ax, 315         ;x2
+    push    ax
+    mov     bx, word[y3]
+    add     bx, 20          ;soma 20
+    mov     ax, bx          ;y2
+    push    ax
+    call    rect
+
+    mov     ax, word[y3]
+    add     ax, 30          ;adiciona o espaçamento e o tamanho dos blocos para a nova posição
+    mov     word[y3],ax     ;salva novo valor de y3
+    mov     ax, word[pontos]
+    add     ax, 1
+    mov     word[pontos], ax
+    neg     word [vy]
 
 bloco4:
-    cmp di, 440
-    jg bloco5
+    ;colisão dos blocos da coluna 4
+    mov     ax,word[y4] ;posição y inicial dos blocos da coluna 4
+    sub     ax,10        ;soma 5 por causa do raio da bola
 
-    cmp di, 420
-    jl bloco5
+    cmp     di, ax  ;colisão com a parte de baixo
+    jl      bloco5
+    
+    add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
 
-    cmp si, 325
-    jl bloco5
+    cmp     di, ax  ;colisão com a parte de cima
+    jg      bloco5
 
-    cmp si, 420
-    jg bloco5
+    cmp     si, 330  ;colisão direita
+    jl      bloco5
 
-    mov byte [cor], preto
-    mov ax, 325    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 440    
-    push ax
-    call rect
+    cmp     si, 425 ;colisão esquerda
+    jg      bloco5
 
-    neg word [vy]
+    mov     byte [cor], preto ;apaga blocos da coluna 4
+    mov     ax, 325          ;x1        
+    push    ax
+    mov     ax, word[y4]    ;y1
+    push    ax
+    mov     ax, 420         ;x2
+    push    ax
+    mov     bx, word[y4]
+    add     bx, 20          ;soma 20
+    mov     ax, bx          ;y2
+    push    ax
+    call    rect
+
+    mov     ax, word[y4]
+    add     ax, 30          ;adiciona o espaçamento e o tamanho dos blocos para a nova posição
+    mov     word[y4],ax     ;salva novo valor de y4
+    mov     ax, word[pontos]
+    add     ax, 1
+    mov     word[pontos], ax
+    neg     word [vy]
 bloco5:
-    cmp di, 440
-    jg bloco6
+    ;colisão dos blocos da coluna 5
+    mov     ax,word[y5] ;posição y inicial dos blocos da coluna 5
+    sub     ax,10        ;soma 5 por causa do raio da bola
 
-    cmp di, 420
-    jl bloco6
+    cmp     di, ax  ;colisão com a parte de baixo
+    jl      bloco6
+    
+    add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
 
-    cmp si, 430
-    jl bloco6
+    cmp     di, ax  ;colisão com a parte de cima
+    jg      bloco6
 
-    cmp si, 525
-    jg bloco6
+    cmp     si, 435  ;colisão direita
+    jl      bloco6
 
-    mov byte [cor], preto
-    mov ax, 430    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 525    
-    push ax
-    mov ax, 440    
-    push ax
-    call rect
+    cmp     si, 530 ;colisão esquerda
+    jg      bloco6
 
-    neg word [vy]
+    mov     byte [cor], preto ;apaga blocos da coluna 5
+    mov     ax, 430          ;x1        
+    push    ax
+    mov     ax, word[y5]    ;y1
+    push    ax
+    mov     ax, 525         ;x2
+    push    ax
+    mov     bx, word[y5]
+    add     bx, 20          ;soma 20
+    mov     ax, bx          ;y2
+    push    ax
+    call    rect
 
+    mov     ax, word[y5]
+    add     ax, 30          ;adiciona o espaçamento e o tamanho dos blocos para a nova posição
+    mov     word[y5],ax     ;salva novo valor de y5
+    mov     ax, word[pontos]
+    add     ax, 1
+    mov     word[pontos], ax
+    neg     word [vy]
 bloco6:
-    cmp di, 440
-    jg jmp_boost3
+    ;colisão dos blocos da coluna 6
+    mov     ax,word[y6] ;posição y inicial dos blocos da coluna 6
+    sub     ax,10        ;soma 5 por causa do raio da bola
 
-    cmp di, 420
-    jl jmp_boost3
+    cmp     di, ax  ;colisão com a parte de baixo
+    jl      jmp_boost3
+    
+    add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
 
-    cmp si, 535
-    jl jmp_boost3
+    cmp     di, ax  ;colisão com a parte de cima
+    jg      jmp_boost3
 
-    cmp si, 630
-    jg jmp_boost3
+    cmp     si, 540  ;colisão direita
+    jl      jmp_boost3
 
-    mov byte [cor], preto
-    mov ax, 535    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 630    
-    push ax
-    mov ax, 440    
-    push ax
-    call rect
+    cmp     si, 635 ;colisão esquerda
+    jg      jmp_boost3
 
-    neg word [vy]
+    mov     byte [cor], preto ;apaga blocos da coluna 6
+    mov     ax, 535          ;x1        
+    push    ax
+    mov     ax, word[y6]    ;y1
+    push    ax
+    mov     ax, 630         ;x2
+    push    ax
+    mov     bx, word[y6]
+    add     bx, 20          ;soma 20
+    mov     ax, bx          ;y2
+    push    ax
+    call    rect
+
+    mov     ax, word[y6]
+    add     ax, 30          ;adiciona o espaçamento e o tamanho dos blocos para a nova posição
+    mov     word[y6],ax     ;salva novo valor de y6
+    mov     ax, word[pontos]
+    add     ax, 1
+    mov     word[pontos], ax
+    neg     word [vy]
 jmp_boost3:
-    jmp main
+    jmp     main
 
 ;===============================================================================================================;
 
@@ -1003,9 +1153,9 @@ line3:  ; dx > bx
     jmp     fim_line
 line31:     inc     bx
     jmp     line3
-;deltax <>0
+    ;deltax <>0
 line1:
-; comparar m�dulos de deltax e deltay sabendo que cx>ax
+    ; comparar m�dulos de deltax e deltay sabendo que cx>ax
     ; cx > ax
     push        cx
     sub     cx,ax
@@ -1219,15 +1369,25 @@ title       db      'Press enter to start'
 apaga       db      '                                                                               '
 
 
-x_barra dw 270      ;posição inicial 
-x_barra_end dw 370  ;posição final
-y_barra dw  40      ;altura da barra
+x_barra     dw      270      ;posição inicial 
+x_barra_end dw      370     ;posição final
+y_barra     dw      40      ;altura da barra
 
 rect_x1     dw  10, 115, 220, 325, 430, 535     ; Coordenadas x1 de cada retângulo
-rect_y1     dw  420, 420, 420, 420, 420, 420    ; Coordenadas y1 de cada retângulo
 rect_x2     dw  105, 210, 315, 420, 525, 630    ; Coordenadas x2 de cada retângulo
+rect_y1     dw  420, 420, 420, 420, 420, 420    ; Coordenadas y1 de cada retângulo
 rect_y2     dw  440, 440, 440, 440, 440, 440    ; Coordenadas y2 de cada retângulo
 num_rects   db  6                               ; Número de retângulos
+
+y1      dw  420
+y3      dw  420
+y2      dw  420
+y4      dw  420
+y5      dw  420
+y6      dw  420
+
+pontos  dw  0
+
 ;*************************************************************************
 segment stack stack
             resb        512
