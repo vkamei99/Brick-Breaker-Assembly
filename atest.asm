@@ -107,73 +107,38 @@ desenha_layout:
     push        ax
     call        line 
 
-desenha_blocos:    ;Largura: 95, Altura: 20, Espaçamento: 10
-    ;2,1 
-        mov     byte [cor], vermelho          
-        mov     ax, 10
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 105
-        push    ax
-        mov     ax, 440
-        push    ax
-        call    rect
-    ;2,2
-        mov     byte [cor], amarelo           
-        mov     ax, 115
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 210
-        push    ax
-        mov     ax, 440
-        push    ax
-        call    rect
-    ;2,3
-        mov     byte [cor], verde_claro   
-        mov     ax, 220
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 315
-        push    ax
-        mov     ax, 440
-        push    ax
-        call    rect
-    ;2,4
-        mov     byte [cor], cyan   
-        mov     ax, 325
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 440
-        push    ax
-        call    rect
-    ;2,5
-        mov     byte [cor], azul   
-        mov     ax, 430
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 525
-        push    ax
-        mov     ax, 440
-        push    ax
-        call    rect
-    ;2,6
-        mov     byte [cor], magenta_claro 
-        mov     ax, 535
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 630
-        push    ax
-        mov     ax, 440
-        push    ax
-        call    rect
+desenha_blocos:    ; Largura: 95, Altura: 20, Espaçamento: 10
+    mov     cx, num_rects      ; Número de retângulos a serem desenhados
+    xor     bx, bx             ; Inicializa bx com 0
+    mov     byte[cor], vermelho
+
+loop_blocos:
+    cmp     bx, cx
+    jge     fim_blocos        
+
+    shl     bx, 1              ; Multiplica bx por 2
+
+    mov     ax, [rect_x1 + bx]
+    push    ax
+    mov     ax, [rect_y1 + bx]
+    push    ax
+    mov     ax, [rect_x2 + bx]
+    push    ax
+    mov     ax, [rect_y2 + bx]
+    push    ax
+    call    rect
+
+    pop ax
+    pop ax
+    pop ax
+    pop ax
+
+    shr     bx, 1              ; Divida bx por 2 para voltar ao índice original
+    inc     bx
+    inc     byte[cor]
+    jmp     loop_blocos
+fim_blocos:
+    jmp main                   ; Continue para o loop principal
 
 main:
     ; Desenhar a bola
@@ -246,7 +211,7 @@ main:
     jle      colisao_barra
 
     ; Verificar colisão com blocos
-    call    colisao_blocos
+    ;call    colisao_blocos
 
 loop main
 
@@ -430,162 +395,8 @@ salva_inicio: ;redefine as variaveis para seus valores iniciais
     mov     word[y_barra],  40     
     jmp ..start
 
-colisao_blocos:
-    ;bloco 1
-    cmp di, 440
-    jg bloco2
+;colisao_blocos:
 
-    cmp di, 420
-    jl bloco2
-
-    cmp si, 10
-    jl bloco2
-
-    cmp si, 105
-    jg bloco2
-
-    mov byte [cor], preto
-    mov ax, 10    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 105    
-    push ax
-    mov ax, 440    
-    push ax
-    call rect
-
-    neg word [vy]
-
-bloco2:
-    cmp di, 440
-    jg bloco3
-
-    cmp di, 420
-    jl bloco3
-
-    cmp si, 115
-    jl bloco3
-
-    cmp si, 210
-    jg bloco3
-
-    mov byte [cor], preto
-    mov ax, 115    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 210    
-    push ax
-    mov ax, 440    
-    push ax
-    call rect
-
-    neg word [vy]
-bloco3:
-    cmp di, 440
-    jg bloco4
-
-    cmp di, 420
-    jl bloco4
-
-    cmp si, 220
-    jl bloco4
-
-    cmp si, 315
-    jg bloco4
-
-    mov byte [cor], preto
-    mov ax, 220    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 315    
-    push ax
-    mov ax, 440    
-    push ax
-    call rect
-
-    neg word [vy]
-
-bloco4:
-    cmp di, 440
-    jg bloco5
-
-    cmp di, 420
-    jl bloco5
-
-    cmp si, 325
-    jl bloco5
-
-    cmp si, 420
-    jg bloco5
-
-    mov byte [cor], preto
-    mov ax, 325    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 440    
-    push ax
-    call rect
-
-    neg word [vy]
-bloco5:
-    cmp di, 440
-    jg bloco6
-
-    cmp di, 420
-    jl bloco6
-
-    cmp si, 430
-    jl bloco6
-
-    cmp si, 525
-    jg bloco6
-
-    mov byte [cor], preto
-    mov ax, 430    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 525    
-    push ax
-    mov ax, 440    
-    push ax
-    call rect
-
-    neg word [vy]
-
-bloco6:
-    cmp di, 440
-    jg jmp_boost3
-
-    cmp di, 420
-    jl jmp_boost3
-
-    cmp si, 535
-    jl jmp_boost3
-
-    cmp si, 630
-    jg jmp_boost3
-
-    mov byte [cor], preto
-    mov ax, 535    
-    push ax
-    mov ax, 420    
-    push ax
-    mov ax, 630    
-    push ax
-    mov ax, 440    
-    push ax
-    call rect
-
-    neg word [vy]
-jmp_boost3:
-    jmp main
 
 ;===============================================================================================================;
 
@@ -1219,15 +1030,15 @@ title       db      'Press enter to start'
 apaga       db      '                                                                               '
 
 
-x_barra dw 270      ;posição inicial 
-x_barra_end dw 370  ;posição final
-y_barra dw  40      ;altura da barra
+x_barra     dw 270      ;posição inicial 
+x_barra_end dw 370      ;posição final
+y_barra     dw  40      ;altura da barra
 
 rect_x1     dw  10, 115, 220, 325, 430, 535     ; Coordenadas x1 de cada retângulo
 rect_y1     dw  420, 420, 420, 420, 420, 420    ; Coordenadas y1 de cada retângulo
 rect_x2     dw  105, 210, 315, 420, 525, 630    ; Coordenadas x2 de cada retângulo
 rect_y2     dw  440, 440, 440, 440, 440, 440    ; Coordenadas y2 de cada retângulo
-num_rects   db  6                               ; Número de retângulos
+num_rects   dw  6                               ; Número de retângulos
 ;*************************************************************************
 segment stack stack
             resb        512
