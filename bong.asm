@@ -516,17 +516,6 @@ colisao_blocos:
     cmp     si, 110 ;colisão esquerda
     jg      bloco2
 
-    cmp     di, ax  ;colisão com a parte de baixo
-    jg      neg[vy]
-    add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
-    cmp     di, ax  ;colisão com a parte de cima
-    jl      neg[vy]
-
-    cmp     si, 5  ;colisão direita
-    jg      neg[vx]
-    cmp     si, 110 ;colisão esquerda
-    jl      neg[vx]
-
     ;apaga blocos da coluna 1
     mov     byte [cor], preto 
     mov     ax, 10          ;x1        
