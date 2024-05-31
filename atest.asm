@@ -787,7 +787,7 @@ bloco6:
 termina_checagem:
     cmp     word[pontos], 12
     jge     winner
-
+    jmp     main
 winner:
     mov     	cx,39 ;seta config para escrever texto de vencedor
     mov     	bx,0
