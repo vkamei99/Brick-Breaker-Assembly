@@ -313,7 +313,6 @@ main:
 
     ; Verificar colisão com blocos
     call    colisao_blocos
-
 loop main
 
 jmp_check:
@@ -351,7 +350,7 @@ colisao_esquerda:
     jmp main  
 
 colisao_baixo:        ;esta colisão é diferente pois é usada para ser o game over
-    mov     	cx,26 ;seta config para escrever game over
+    mov     	cx,27 ;seta config para escrever game over
     mov     	bx,0
     mov     	dh,14
     mov     	dl,26
@@ -489,11 +488,18 @@ jmp_boost:
     jmp main
 
 salva_inicio: ;redefine as variaveis para seus valores iniciais
-    mov     word[vx],3
-    mov     word[vy],3
+    mov     word[vx], 3
+    mov     word[vy], 3
     mov     word[x_barra], 270      
     mov     word[x_barra_end], 370
-    mov     word[y_barra],  40     
+    mov     word[y_barra], 40
+    mov     word[y1], 420     
+    mov     word[y2], 420     
+    mov     word[y3], 420     
+    mov     word[y4], 420     
+    mov     word[y5], 420     
+    mov     word[y6], 420     
+    mov     word[pontos], 0
     jmp ..start
 
 colisao_blocos:
@@ -701,18 +707,18 @@ bloco6:
     sub     ax,10        ;soma 5 por causa do raio da bola
 
     cmp     di, ax  ;colisão com a parte de baixo
-    jl      jmp_boost3
+    jl      termina_checagem
     
     add     ax, 20  ;soma vinte pixels para a ter a colisão da parte de cima
 
     cmp     di, ax  ;colisão com a parte de cima
-    jg      jmp_boost3
+    jg      termina_checagem
 
     cmp     si, 540  ;colisão direita
-    jl      jmp_boost3
+    jl      termina_checagem
 
     cmp     si, 635 ;colisão esquerda
-    jg      jmp_boost3
+    jg      termina_checagem
 
     mov     byte [cor], preto ;apaga blocos da coluna 6
     mov     ax, 535          ;x1        
@@ -734,9 +740,26 @@ bloco6:
     add     ax, 1
     mov     word[pontos], ax
     neg     word [vy]
-jmp_boost3:
+termina_checagem:
+    cmp     word[pontos], 12
+    jge     winner
     jmp     main
 
+winner:
+    mov     	cx,39 ;seta config para escrever texto de vencedor
+    mov     	bx,0
+    mov     	dh,14
+    mov     	dl,20
+    mov		    byte[cor],vermelho
+
+winner_text:
+    call    cursor
+    mov     al,[bx+win]
+    call    caracter
+    inc     bx
+    inc     dl
+    loop    winner_text
+    jmp     esperar_entrada
 ;===============================================================================================================;
 
 l4:
@@ -1364,8 +1387,9 @@ vy          dw      3
 saved_vx    dw      0
 saved_vy    dw      0
                    
-fim         db      'Game Over reiniciar? (y/n)'
 title       db      'Press enter to start'
+fim         db      'Game Over! reiniciar? (y/n)'
+win      db      'Parabens, Voce Ganhou! reiniciar? (y/n)'
 apaga       db      '                                                                               '
 
 
