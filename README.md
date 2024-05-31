@@ -72,10 +72,6 @@ Para rodar este jogo, você precisa do DOSBox instalado no seu computador. Siga 
   - O jogo termina quando todos os blocos são destruídos ou a bola cai abaixo da raquete.
 
 ## To-Do
-
-- Detecção de colisão com blocos.
-- Remoção de blocos ao serem atingidos.
-- Implementação da lógica de vitória do jogo.
 - Melhor organização do código, dividindo funções.
 
 ## Contribuição

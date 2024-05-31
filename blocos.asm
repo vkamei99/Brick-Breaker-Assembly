@@ -1,11 +1,11 @@
-;1,1
+    ;1,1
         mov     byte [cor], magenta_claro   
         mov     ax, 10
         push    ax
         mov     ax, 450
         push    ax
         mov     ax, 105
-        push    ax
+        push    ax0
         mov     ax, 470
         push    ax
         call    rect
