@@ -35,7 +35,7 @@ Para rodar este jogo, você precisa do DOSBox instalado no seu computador. Siga 
 
 2. **Clonar o Repositório:**
     ```
-    git clone https://github.com/seuusuario/Brick-Breaker-Assembly.git
+    git clone https://github.com/vkamei99/Brick-Breaker-Assembly.git
     cd Brick-Breaker-Assembly
     ```
 
