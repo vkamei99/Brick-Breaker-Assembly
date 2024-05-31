@@ -1400,7 +1400,7 @@ saved_vy    dw      0
                    
 title       db      'Press enter to start'
 fim         db      'Game Over! reiniciar? (y/n)'
-win         db      'Parabens, Voce Ganhou! reiniciar? (y/n)'
+win         db      'Parabens! Voce Ganhou! reiniciar? (y/n)'
 paused      db      'Paused'
 apaga       db      '                                                  '
 
