@@ -1,226 +1,190 @@
-segment code
-global desenhar_layout, desenhar_blocos, desenhar_bola, limpar_bola, desenhar_barra
+; graphics.asm
 
-desenhar_layout:
-    mov     byte [cor], preto    ; apaga title com rect
+global apaga_title, show_title, desenha_layout, desenha_bola, apaga_bola, desenha_barra, desenha_retangulo
+
+extern cor, x_barra, x_barra_end, y_barra
+
+apaga_title:
+    ; Implementação da função apaga_title
+    mov     cx,50
+    mov     bx,0
+    mov     dh,14
+    mov     dl,10
+    mov     byte [cor], 0
+
+apaga_title_loop:
+    call cursor
+    mov al,[bx+apaga]
+    call caracter
+    inc bx
+    inc dl
+    loop apaga_title_loop
+    ret
+
+show_title:
+    ; Implementação da função show_title
+    mov     cx,20
+    mov     bx,0
+    mov     dh,14
+    mov     dl,29
+    mov     byte [cor], 15
+
+show_title_loop:
+    call cursor
+    mov al,[bx+title]
+    call caracter
+    inc bx
+    inc dl
+    loop show_title_loop
+    ret
+
+desenha_layout:
+    ; Implementação da função desenha_layout
+    mov     byte [cor], 0
     mov     ax, 230
-    push    ax
+    push ax
     mov     ax, 240
-    push    ax
+    push ax
     mov     ax, 390
-    push    ax
+    push ax
     mov     ax, 255
-    push    ax
-    call    rect
+    push ax
+    call desenha_retangulo
 
-    mov     byte[cor],branco_intenso    ; esquerda
-    mov     ax,0
-    push        ax
-    mov     ax,0
-    push        ax
-    mov     ax,0
-    push        ax
-    mov     ax,479
-    push        ax
-    call        line
+    mov     byte [cor], 15
+    mov     ax, 0
+    push ax
+    mov     ax, 0
+    push ax
+    mov     ax, 0
+    push ax
+    mov     ax, 479
+    push ax
+    call line
 
-    mov     byte[cor],branco_intenso    ; cima
-    mov     ax,0
-    push        ax
-    mov     ax,479
-    push        ax
-    mov     ax,639
-    push        ax
-    mov     ax,479
-    push        ax
-    call        line
+    mov     ax, 0
+    push ax
+    mov     ax, 479
+    push ax
+    mov     ax, 639
+    push ax
+    mov     ax, 479
+    push ax
+    call line
 
-    mov     byte[cor],branco_intenso    ; direita
-    mov     ax,639
-    push        ax
-    mov     ax,0
-    push        ax
-    mov     ax,639
-    push        ax
-    mov     ax,479
-    push        ax
-    call        line
-
+    mov     ax, 639
+    push ax
+    mov     ax, 0
+    push ax
+    mov     ax, 639
+    push ax
+    mov     ax, 479
+    push ax
+    call line 
     ret
 
-desenha_blocos:    ;Largura: 95, Altura: 20, Espaçamento: 10
-    ;1,1
-        mov     byte [cor], magenta   
-        mov     ax, 10
-        push    ax
-        mov     ax, 450
-        push    ax
-        mov     ax, 105
-        push    ax
-        mov     ax, 470
-        push    ax
-        call    rect
-    ;1,2 
-        mov     byte [cor], azul              
-        mov     ax, 115
-        push    ax
-        mov     ax, 450
-        push    ax
-        mov     ax, 210
-        push    ax
-        mov     ax, 470
-        push    ax
-        call    rect
-    ;1,3
-        mov     byte [cor], cyan   
-        mov     ax, 220
-        push    ax
-        mov     ax, 450
-        push    ax
-        mov     ax, 315
-        push    ax
-        mov     ax, 470
-        push    ax
-        call    rect
-    ;1,4
-        mov     byte [cor], verde_claro   
-        mov     ax, 325
-        push    ax
-        mov     ax, 450
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 470
-        push    ax
-        call    rect
-    ;1,5
-        mov     byte [cor], amarelo   
-        mov     ax, 430
-        push    ax
-        mov     ax, 450
-        push    ax
-        mov     ax, 525
-        push    ax
-        mov     ax, 470
-        push    ax
-        call    rect
-    ;1,6
-        mov     byte [cor], vermelho   
-        mov     ax, 535
-        push    ax
-        mov     ax, 450
-        push    ax
-        mov     ax, 630
-        push    ax
-        mov     ax, 470
-        push    ax
-        call    rect
-    ;2,1 
-        mov     byte [cor], vermelho          
-        mov     ax, 10
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 105
-        push    ax
-        mov     ax, 440
-        push    ax
-        call    rect
-    ;2,2
-        mov     byte [cor], amarelo           
-        mov     ax, 115
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 210
-        push    ax
-        mov     ax, 440
-        push    ax
-        call    rect
-    ;2,3
-        mov     byte [cor], verde_claro   
-        mov     ax, 220
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 315
-        push    ax
-        mov     ax, 440
-        push    ax
-        call    rect
-    ;2,4
-        mov     byte [cor], cyan   
-        mov     ax, 325
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 440
-        push    ax
-        call    rect
-    ;2,5
-        mov     byte [cor], azul   
-        mov     ax, 430
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 525
-        push    ax
-        mov     ax, 440
-        push    ax
-        call    rect
-    ;2,6
-        mov     byte [cor], magenta 
-        mov     ax, 535
-        push    ax
-        mov     ax, 420
-        push    ax
-        mov     ax, 630
-        push    ax
-        mov     ax, 440
-        push    ax
-        call    rect
-
-    ret
-
-desenhar_bola:
-    mov     byte[cor],branco_intenso  
+desenha_bola:
+    ; Implementação da função desenha_bola
+    mov     byte [cor], 15
     mov     ax, si 
-    push        ax
+    push ax
     mov     ax, di
-    push        ax
-    mov     ax,10
-    push        ax
-    call    full_circle
+    push ax
+    mov     ax, 10
+    push ax
+    call full_circle
     ret
 
-limpar_bola:
-    mov     byte[cor],preto 
+apaga_bola:
+    ; Implementação da função apaga_bola
+    mov     byte [cor], 0
     mov     ax, si
-    push        ax
+    push ax
     mov     ax, di
-    push        ax
-    mov     ax,10
-    push        ax
-    call    full_circle
+    push ax
+    mov     ax, 10
+    push ax
+    call full_circle
     pop ax
     pop ax
     pop ax
     ret
 
-desenhar_barra:
-    mov     byte[cor],branco_intenso    
-    mov     ax, word[x_barra]
-    push        ax
-    mov     ax, word[y_barra]
-    push        ax
-    mov     ax, word[x_barra_end]
-    push        ax
-    mov     ax, word[y_barra]
-    push        ax
-    call        line
+desenha_barra:
+    ; Implementação da função desenha_barra
+    mov     byte [cor], 15    
+    mov     ax, [x_barra]
+    push ax
+    mov     ax, [y_barra]
+    push ax
+    mov     ax, [x_barra_end]
+    push ax
+    mov     ax, [y_barra]
+    push ax
+    call line
     pop ax
     pop ax
     pop ax
+    ret
+
+; Função para desenhar um retângulo preenchido
+desenha_retangulo:
+    push bp
+    mov bp, sp
+    pushf
+    push ax
+    push bx
+    push cx
+    push dx
+    push si
+    push di
+
+    mov ax, [bp+10]
+    mov bx, [bp+8]
+    mov cx, [bp+6]
+    mov dx, [bp+4]
+fill:
+    push ax
+    push bx
+    push cx
+    push bx
+    call line
+
+    inc bx
+    cmp bx, dx
+    jle fill
+
+    pop di
+    pop si
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    popf
+    pop bp
+    ret 8
+
+; Função para desenhar uma linha entre dois pontos
+line:
+    ; Implementação da função line
+    ret
+
+; Função para desenhar um círculo usando o algoritmo de Bresenham
+circle:
+    ; Implementação da função circle
+    ret
+
+; Função para desenhar um ponto na posição (x, y)
+plot_xy:
+    ; Implementação da função plot_xy
+    ret
+
+; Função para posicionar o cursor
+cursor:
+    ; Implementação da função cursor
+    ret
+
+; Função para escrever um caractere na posição do cursor
+caracter:
+    ; Implementação da função caracter
     ret
