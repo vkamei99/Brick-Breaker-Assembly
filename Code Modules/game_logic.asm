@@ -132,4 +132,4 @@ PADDLE_LEFT:
     push ax
     mov ax, [y_barra]
     push ax
-    mov ax, [x_barra
+    mov ax, [x_barra]

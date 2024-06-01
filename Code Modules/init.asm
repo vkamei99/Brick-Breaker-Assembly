@@ -68,7 +68,6 @@ win db 'Parabens! Voce Ganhou! reiniciar? (y/n)', 0
 paused db 'Paused', 0
 apaga db '                                                  ', 0
 
-segment bss
 global velocidade, vx, vy, saved_vx, saved_vy, x_barra, x_barra_end, y_barra
 global rect_x1, rect_x2, rect_y1, rect_y2, num_rects, y1, y2, y3, y4, y5, y6, pontos
 
