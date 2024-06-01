@@ -1412,12 +1412,6 @@ x_barra     dw      270      ;posição inicial
 x_barra_end dw      370     ;posição final
 y_barra     dw      40      ;altura da barra
 
-rect_x1     dw      10, 115, 220, 325, 430, 535     ; Coordenadas x1 de cada retângulo
-rect_x2     dw      105, 210, 315, 420, 525, 630    ; Coordenadas x2 de cada retângulo
-rect_y1     dw      420, 420, 420, 420, 420, 420    ; Coordenadas y1 de cada retângulo
-rect_y2     dw      440, 440, 440, 440, 440, 440    ; Coordenadas y2 de cada retângulo
-num_rects   db      6                               ; Número de retângulos
-
 y1          dw      420
 y3          dw      420
 y2          dw      420
