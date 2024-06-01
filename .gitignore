@@ -1,3 +1,5 @@
 *.LST
 *.obj
 *.exe
+*.o
+*.bat
