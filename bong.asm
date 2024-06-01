@@ -1,5 +1,6 @@
-;Este arquivo é a "raiz" nele contem todas as funções e o codigo inteiro sem ser modularizado
-
+;==================================================================;
+;                   Jogo Brick Breaker
+;==================================================================;
 segment code
 ..start:
     mov         ax,data
