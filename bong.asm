@@ -1,3 +1,5 @@
+;Este arquivo é a "raiz" nele contem todas as funções e o codigo inteiro sem ser modularizado
+
 segment code
 ..start:
     mov         ax,data
