@@ -111,7 +111,7 @@ desenha_layout:
 
 desenha_blocos:    ;Largura: 95, Altura: 20, Espaçamento: 10
     ;1,1
-        mov     byte [cor], magenta_claro   
+        mov     byte [cor], magenta   
         mov     ax, 10
         push    ax
         mov     ax, 450
@@ -232,7 +232,7 @@ desenha_blocos:    ;Largura: 95, Altura: 20, Espaçamento: 10
         push    ax
         call    rect
     ;2,6
-        mov     byte [cor], magenta_claro 
+        mov     byte [cor], magenta 
         mov     ax, 535
         push    ax
         mov     ax, 420
