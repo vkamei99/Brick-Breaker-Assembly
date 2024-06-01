@@ -3,14 +3,12 @@
 Este projeto é um clássico jogo de Brick Breaker desenvolvido em linguagem Assembly. Ele roda no DOSBox, um emulador x86 com DOS.
 
 ## Tabela de Conteúdos
-- [Brick-Breaker-Assembly](#brick-breaker-assembly)
-  - [Tabela de Conteúdos](#tabela-de-conteúdos)
-  - [Introdução](#introdução)
-  - [Recursos](#recursos)
-  - [Instalação](#instalação)
-  - [Uso](#uso)
-  - [To-Do](#to-do)
-  - [Contribuição](#contribuição)
+- [Introdução](#introdução)
+- [Recursos](#recursos)
+- [Instalação](#instalação)
+- [Uso](#uso)
+- [To-Do](#to-do)
+- [Contribuição](#contribuição)
 
 ## Introdução
 
