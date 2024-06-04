@@ -382,17 +382,6 @@ jmp_salva:
     jmp salva_inicio
 
 pause:
-    cmp word[vx], 0
-    je unpause      
-
-    mov ax, word[vx]
-    mov word[saved_vx], ax
-    mov ax, word[vy]
-    mov word[saved_vy], ax
-
-    mov word[vx], 0
-    mov word[vy], 0
-
     mov     	cx,6 ;seta config para escrever paused
     mov     	bx,0
     mov     	dh,14
@@ -407,15 +396,27 @@ loop_pause_text:
     inc     dl
     loop    loop_pause_text
 
-    jmp main
+    ; Desenhar a bola
+    mov     byte[cor],branco_intenso  
+    mov     ax, si 
+    push        ax
+    mov     ax, di
+    push        ax
+    mov     ax,10
+    push        ax
+    call    full_circle
+
+esperar_unpause:
+    mov ah,00h
+    int 16h
+
+    cmp al,'p' 
+    je unpause
+
+    jmp esperar_unpause
 
 unpause:
-    mov ax, word[saved_vx]
-    mov word[vx], ax
-    mov ax, word[saved_vy]
-    mov word[vy], ax
-
-    mov     	cx,50 ;seta config para apagar paused
+    mov     	cx,50 ;seta config para apagar texto paused
     mov     	bx,0
     mov     	dh,14
     mov     	dl,10 ;dl=coluna  (0-79)
