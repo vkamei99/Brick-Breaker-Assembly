@@ -435,7 +435,7 @@ loop_apaga_pause_text:
 check_com: ; checa tecla
     mov ah,00h
     int 16h
-    
+        
     cmp al,41h ;'A' -> Move para esquerda
     je PADDLE_LEFT
     cmp al,61h ;'a'
